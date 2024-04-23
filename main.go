@@ -14,23 +14,25 @@ import (
 )
 
 func main() {
-	sim := simulation.NewSimulation()
+	const timeStep float64 = 0.0001;
+
+	sim := simulation.NewSimulation(timeStep)
 
 	sim.Bodies = []simulation.Body{
 		{
-			Mass:     1e13,
-			Position: r2.Vec{X: -10, Y: 0},
+			Mass:     1e12,
+			Position: r2.Vec{X: 0, Y: 0},
+			Velocity: r2.Vec{X: 0, Y: 0},
+		},
+		{
+			Mass:     1e12,
+			Position: r2.Vec{X: 15, Y: 0},
 			Velocity: r2.Vec{X: 0, Y: 3},
 		},
 		{
 			Mass:     1e12,
-			Position: r2.Vec{X: 10, Y: 0},
-			Velocity: r2.Vec{X: 0, Y: -3},
-		},
-		{
-			Mass:     1e12,
-			Position: r2.Vec{X: 0, Y: 5},
-			Velocity: r2.Vec{X: 2, Y: -4},
+			Position: r2.Vec{X: 0, Y: 11},
+			Velocity: r2.Vec{X: -2, Y: 0},
 		},
 	}
 
@@ -48,6 +50,10 @@ func main() {
 	screen.SetStyle(defaultStyle)
 
 	rend := renderer.NewRenderer()
+
+	// Ratio between simulation time and real time
+	var simulationSpeed float64 = 3
+	var simulationTimeAvailable float64
 
 	targetFrameTime := time.Duration(math.Floor(1.0 / 60 * float64(time.Second)))
 	lastFrameTime := time.Now()
@@ -73,15 +79,21 @@ outer:
 
 		rend.AddFrameMessage(fmt.Sprintf("dt: %.2f", deltaTime.Seconds() * 1000))
 
-		sim.Step()
+		simulationTimeAvailable += deltaTime.Seconds() * simulationSpeed
+		for simulationTimeAvailable >= sim.TimeStep {
+			simulationTimeAvailable -= sim.TimeStep
+
+			sim.Step()
+		}
+		rend.AddFrameMessage(fmt.Sprintf("Step: %d", sim.SimulationStep))
 
 		totalEnergy := sim.CalculateTotalEnergy()
-		rend.AddFrameMessage(fmt.Sprintf("Total energy: %e", totalEnergy))
+		rend.AddFrameMessage(fmt.Sprintf("Total energy: %.2e", totalEnergy))
 
 		// @TODO: Don't recalculate it all the time?
 		centerOfMass := sim.CalculateCenterOfMass()
 		rend.SetCenter(centerOfMass)
-		rend.AddFrameMessage(fmt.Sprintf("Center: %+v", centerOfMass))
+		// rend.AddFrameMessage(fmt.Sprintf("Center: <%.3e, %.3e>", centerOfMass.X, centerOfMass.Y))
 
 		screen.Clear()
 		rend.Render(screen, defaultStyle, sim)

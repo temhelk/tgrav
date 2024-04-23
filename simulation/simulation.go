@@ -16,17 +16,20 @@ type Body struct {
 
 type Simulation struct {
 	TimeStep float64
+	SimulationStep uint64
 
 	Bodies []Body
 }
 
-func NewSimulation() *Simulation {
+func NewSimulation(timeStep float64) *Simulation {
 	return &Simulation{
-		TimeStep: 0.01,
+		TimeStep: timeStep,
 	}
 }
 
 func (sim *Simulation) Step() {
+	sim.SimulationStep += 1
+
 	if sim.Bodies == nil {
 		return
 	}
