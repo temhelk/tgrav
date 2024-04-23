@@ -17,14 +17,19 @@ func main() {
 
 	sim.Bodies = []simulation.Body{
 		{
-			Mass:     1e14,
+			Mass:     1e13,
 			Position: r2.Vec{X: -10, Y: 0},
 			Velocity: r2.Vec{X: 0, Y: 3},
 		},
 		{
-			Mass:     1e13,
+			Mass:     1e12,
 			Position: r2.Vec{X: 10, Y: 0},
 			Velocity: r2.Vec{X: 0, Y: -3},
+		},
+		{
+			Mass:     1e12,
+			Position: r2.Vec{X: 0, Y: 5},
+			Velocity: r2.Vec{X: 2, Y: -4},
 		},
 	}
 
