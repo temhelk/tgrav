@@ -48,9 +48,16 @@ func (rend *Renderer) Render(screen tcell.Screen, style tcell.Style, sim *simula
 
 			partNumber := yPart + xPart * 4
 
-			symbol := makeBraille(partNumber)
+			existingSymbol, _, _, _ := screen.GetContent(xInt, yInt)
 
-			screen.SetContent(xInt, yInt, symbol, nil, style)
+			newDotSymbol := makeBraille(partNumber)
+
+			if existingSymbol == ' ' {
+				screen.SetContent(xInt, yInt, newDotSymbol, nil, style)
+			} else {
+				combinedSymbol := combineBraille(existingSymbol, newDotSymbol)
+				screen.SetContent(xInt, yInt, combinedSymbol, nil, style)
+			}
 		}
 	}
 
@@ -100,6 +107,13 @@ func makeBraille(partNumber int) rune {
 	}
 
 	return rune(0x2800 + unicodeOffset)
+}
+
+func combineBraille(lhs, rhs rune) rune {
+	lhsOffset := int(lhs) - 0x2800;
+	rhsOffset := int(rhs) - 0x2800;
+
+	return rune(0x2800 + lhsOffset | rhsOffset)
 }
 
 func clampInt(n, a, b int) int {

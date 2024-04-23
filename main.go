@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	const timeStep float64 = 0.0001;
+	const timeStep float64 = 0.0001
 
 	sim := simulation.NewSimulation(timeStep)
 
@@ -49,6 +49,8 @@ func main() {
 	defaultStyle := tcell.StyleDefault
 	screen.SetStyle(defaultStyle)
 
+	screen.EnableMouse()
+
 	rend := renderer.NewRenderer()
 
 	// Ratio between simulation time and real time
@@ -70,6 +72,16 @@ outer:
 				if key == tcell.KeyCtrlC || key == tcell.KeyEscape {
 					break outer
 				}
+			case *tcell.EventMouse:
+				buttons := event.Buttons()
+
+				if buttons&tcell.WheelDown != 0 {
+					rend.WorldWidth *= 1.2
+				}
+
+				if buttons&tcell.WheelUp != 0 {
+					rend.WorldWidth /= 1.2
+				}
 			}
 		}
 
@@ -77,7 +89,7 @@ outer:
 		deltaTime := newFrameTime.Sub(lastFrameTime)
 		lastFrameTime = newFrameTime
 
-		rend.AddFrameMessage(fmt.Sprintf("dt: %.2f", deltaTime.Seconds() * 1000))
+		rend.AddFrameMessage(fmt.Sprintf("dt: %.2f", deltaTime.Seconds()*1000))
 
 		simulationTimeAvailable += deltaTime.Seconds() * simulationSpeed
 		for simulationTimeAvailable >= sim.TimeStep {
