@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"math"
 	"time"
 
 	"github.com/temhelk/tgrav/renderer"
@@ -48,6 +49,9 @@ func main() {
 
 	rend := renderer.NewRenderer()
 
+	targetFrameTime := time.Duration(math.Floor(1.0 / 60 * float64(time.Second)))
+	lastFrameTime := time.Now()
+
 outer:
 	for {
 		for screen.HasPendingEvent() {
@@ -63,6 +67,12 @@ outer:
 			}
 		}
 
+		newFrameTime := time.Now()
+		deltaTime := newFrameTime.Sub(lastFrameTime)
+		lastFrameTime = newFrameTime
+
+		rend.AddFrameMessage(fmt.Sprintf("dt: %.2f", deltaTime.Seconds() * 1000))
+
 		sim.Step()
 
 		totalEnergy := sim.CalculateTotalEnergy()
@@ -71,13 +81,14 @@ outer:
 		// @TODO: Don't recalculate it all the time?
 		centerOfMass := sim.CalculateCenterOfMass()
 		rend.SetCenter(centerOfMass)
-		rend.AddFrameMessage(fmt.Sprintf(" Center: %+v", centerOfMass))
+		rend.AddFrameMessage(fmt.Sprintf("Center: %+v", centerOfMass))
 
 		screen.Clear()
 		rend.Render(screen, defaultStyle, sim)
 		screen.Show()
 
-		time.Sleep(time.Second / 100)
+		sleepFor := targetFrameTime - time.Now().Sub(lastFrameTime)
+		time.Sleep(sleepFor)
 	}
 
 	screen.Fini()

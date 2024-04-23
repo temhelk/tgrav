@@ -50,6 +50,10 @@ func (rend *Renderer) Render(screen tcell.Screen, style tcell.Style, sim *simula
 }
 
 func (rend *Renderer) AddFrameMessage(message string) {
+	if rend.frameMessage != "" {
+		rend.frameMessage += " | "
+	}
+
 	rend.frameMessage += message
 }
 
