@@ -25,14 +25,14 @@ func main() {
 			Velocity: r2.Vec{X: 0, Y: 0},
 		},
 		{
-			Mass:     1e12,
-			Position: r2.Vec{X: 15, Y: 0},
-			Velocity: r2.Vec{X: 0, Y: 3},
+			Mass:     1e10,
+			Position: r2.Vec{X: -10, Y: 0},
+			Velocity: r2.Vec{X: 0, Y: -2.7},
 		},
 		{
-			Mass:     1e12,
-			Position: r2.Vec{X: 0, Y: 11},
-			Velocity: r2.Vec{X: -2, Y: 0},
+			Mass:     1e5,
+			Position: r2.Vec{X: -11.5, Y: 0},
+			Velocity: r2.Vec{X: 0, Y: -2},
 		},
 	}
 
@@ -54,7 +54,7 @@ func main() {
 	rend := renderer.NewRenderer()
 
 	// Ratio between simulation time and real time
-	var simulationSpeed float64 = 3
+	var simulationSpeed float64 = 1
 	var simulationTimeAvailable float64
 
 	targetFrameTime := time.Duration(math.Floor(1.0 / 60 * float64(time.Second)))

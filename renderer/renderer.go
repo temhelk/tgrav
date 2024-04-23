@@ -40,11 +40,11 @@ func (rend *Renderer) Render(screen tcell.Screen, style tcell.Style, sim *simula
 		yDecimal := y - math.Floor(y)
 
 		xInt := int(x)
-		yInt := int(y)
+		yInt := height - int(y) - 1
 
 		if xInt >= 0 && xInt < width && yInt >= 0 && yInt < height {
 			xPart := clampInt(int(xDecimal * 2), 0, 1)
-			yPart := clampInt(int(yDecimal * 4), 0, 3)
+			yPart := 3 - clampInt(int(yDecimal * 4), 0, 3)
 
 			partNumber := yPart + xPart * 4
 
