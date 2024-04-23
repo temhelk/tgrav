@@ -31,7 +31,7 @@ func main() {
 		},
 		{
 			Mass:     1e12,
-			Position: r2.Vec{X: 0, Y: 15},
+			Position: r2.Vec{X: 0, Y: 11},
 			Velocity: r2.Vec{X: -2, Y: 0},
 		},
 	}
@@ -91,8 +91,8 @@ outer:
 		rend.AddFrameMessage(fmt.Sprintf("Total energy: %.2e", totalEnergy))
 
 		// @TODO: Don't recalculate it all the time?
-		// centerOfMass := sim.CalculateCenterOfMass()
-		// rend.Center = centerOfMass
+		centerOfMass := sim.CalculateCenterOfMass()
+		rend.Center = centerOfMass
 		// rend.AddFrameMessage(fmt.Sprintf("Center: <%.3e, %.3e>", centerOfMass.X, centerOfMass.Y))
 
 		screen.Clear()

@@ -33,8 +33,8 @@ func (rend *Renderer) Render(screen tcell.Screen, style tcell.Style, sim *simula
 	scaleY := float64(height) / worldHeight * 0.497
 
 	for _, body := range sim.Bodies {
-		x := (body.Position.X - rend.Center.X + rend.WorldWidth / 2) * scaleX
-		y := (body.Position.Y - rend.Center.Y + worldHeight / 2) * scaleY
+		x := (body.Position.X - rend.Center.X) * scaleX + (float64(width) / 2)
+		y := (body.Position.Y - rend.Center.Y) * scaleY + (float64(height) / 2)
 
 		xDecimal := x - math.Floor(x)
 		yDecimal := y - math.Floor(y)
