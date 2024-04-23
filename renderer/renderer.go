@@ -10,22 +10,31 @@ import (
 )
 
 type Renderer struct {
-	center r2.Vec
+	Center r2.Vec
+	WorldWidth float64
 
 	frameMessage string
 }
 
 func NewRenderer() *Renderer {
 	return &Renderer{
+		WorldWidth: 100,
 	}
 }
 
 func (rend *Renderer) Render(screen tcell.Screen, style tcell.Style, sim *simulation.Simulation) {
 	width, height := screen.Size()
 
+	worldHeight := (float64(height) / float64(width)) * rend.WorldWidth
+
+	scaleX := float64(width) / rend.WorldWidth
+
+	// Scale y by 0.497 to adjust for non square character terminal (adjusted for my font)
+	scaleY := float64(height) / worldHeight * 0.497
+
 	for _, body := range sim.Bodies {
-		x := (body.Position.X - rend.center.X) + (float64(width) / 2)
-		y := (body.Position.Y - rend.center.Y) + (float64(height) / 2)
+		x := (body.Position.X - rend.Center.X + rend.WorldWidth / 2) * scaleX
+		y := (body.Position.Y - rend.Center.Y + worldHeight / 2) * scaleY
 
 		xDecimal := x - math.Floor(x)
 		yDecimal := y - math.Floor(y)
@@ -55,10 +64,6 @@ func (rend *Renderer) AddFrameMessage(message string) {
 	}
 
 	rend.frameMessage += message
-}
-
-func (rend *Renderer) SetCenter(center r2.Vec) {
-	rend.center = center
 }
 
 func (rend *Renderer) writeString(screen tcell.Screen, x, y int, style tcell.Style, str string) {
