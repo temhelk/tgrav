@@ -68,18 +68,23 @@ outer:
 			switch event := event.(type) {
 			case *tcell.EventKey:
 				key := event.Key()
+				r := event.Rune()
 
 				if key == tcell.KeyCtrlC || key == tcell.KeyEscape {
 					break outer
+				}
+
+				if r == '+' {
+					simulationSpeed *= 2
+				} else if r == '-' {
+					simulationSpeed /= 2
 				}
 			case *tcell.EventMouse:
 				buttons := event.Buttons()
 
 				if buttons&tcell.WheelDown != 0 {
 					rend.WorldWidth *= 1.2
-				}
-
-				if buttons&tcell.WheelUp != 0 {
+				} else if buttons&tcell.WheelUp != 0 {
 					rend.WorldWidth /= 1.2
 				}
 			}
@@ -90,6 +95,7 @@ outer:
 		lastFrameTime = newFrameTime
 
 		rend.AddFrameMessage(fmt.Sprintf("dt: %.2f", deltaTime.Seconds()*1000))
+		rend.AddFrameMessage(fmt.Sprintf("speed: %.2f", simulationSpeed))
 
 		simulationTimeAvailable += deltaTime.Seconds() * simulationSpeed
 		for simulationTimeAvailable >= sim.TimeStep {
