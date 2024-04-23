@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -16,7 +17,7 @@ func main() {
 
 	sim.Bodies = []simulation.Body{
 		{
-			Mass:     1e13,
+			Mass:     1e14,
 			Position: r2.Vec{X: -10, Y: 0},
 			Velocity: r2.Vec{X: 0, Y: 3},
 		},
@@ -59,8 +60,15 @@ outer:
 
 		sim.Step()
 
+		totalEnergy := sim.CalculateTotalEnergy()
+		rend.AddFrameMessage(fmt.Sprintf("Total energy: %e", totalEnergy))
+
+		// @TODO: Don't recalculate it all the time?
+		centerOfMass := sim.CalculateCenterOfMass()
+		rend.SetCenter(centerOfMass)
+		rend.AddFrameMessage(fmt.Sprintf(" Center: %+v", centerOfMass))
+
 		screen.Clear()
-		rend.AddFrameMessage("Hello")
 		rend.Render(screen, defaultStyle, sim)
 		screen.Show()
 

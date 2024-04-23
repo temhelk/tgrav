@@ -6,15 +6,17 @@ import (
 	"github.com/temhelk/tgrav/simulation"
 
 	"github.com/gdamore/tcell/v2"
+	"gonum.org/v1/gonum/spatial/r2"
 )
 
 type Renderer struct {
+	center r2.Vec
+
 	frameMessage string
 }
 
 func NewRenderer() *Renderer {
 	return &Renderer{
-		frameMessage: "",
 	}
 }
 
@@ -22,8 +24,8 @@ func (rend *Renderer) Render(screen tcell.Screen, style tcell.Style, sim *simula
 	width, height := screen.Size()
 
 	for _, body := range sim.Bodies {
-		x := body.Position.X + (float64(width) / 2)
-		y := body.Position.Y + (float64(height) / 2)
+		x := (body.Position.X - rend.center.X) + (float64(width) / 2)
+		y := (body.Position.Y - rend.center.Y) + (float64(height) / 2)
 
 		xDecimal := x - math.Floor(x)
 		yDecimal := y - math.Floor(y)
@@ -49,6 +51,10 @@ func (rend *Renderer) Render(screen tcell.Screen, style tcell.Style, sim *simula
 
 func (rend *Renderer) AddFrameMessage(message string) {
 	rend.frameMessage += message
+}
+
+func (rend *Renderer) SetCenter(center r2.Vec) {
+	rend.center = center
 }
 
 func (rend *Renderer) writeString(screen tcell.Screen, x, y int, style tcell.Style, str string) {

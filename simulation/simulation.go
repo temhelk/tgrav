@@ -60,3 +60,41 @@ func (sim *Simulation) Step() {
 		body.Position = r2.Add(body.Position, r2.Scale(sim.TimeStep, body.Velocity))
 	}
 }
+
+func (sim *Simulation) CalculateCenterOfMass() r2.Vec {
+	var totalMass float64
+
+	for _, body := range sim.Bodies {
+		totalMass += body.Mass
+	}
+
+	var centerOfMass r2.Vec
+
+	for _, body := range sim.Bodies {
+		centerOfMass = r2.Add(centerOfMass, r2.Scale(body.Mass / totalMass, body.Position))
+	}
+
+	return centerOfMass
+}
+
+func (sim *Simulation) CalculateTotalEnergy() float64 {
+	potentialEnergy := 0.0
+	for body1Index, body1 := range sim.Bodies {
+		for body2Index, body2 := range sim.Bodies {
+			if body1Index == body2Index {
+				continue
+			}
+
+			body2ToBody1 := r2.Sub(body1.Position, body2.Position)
+			potentialEnergy += -G * body1.Mass * body2.Mass / r2.Norm(body2ToBody1)
+		}
+	}
+	potentialEnergy /= 2
+
+	kineticEnergy := 0.0
+	for _, body := range sim.Bodies {
+		kineticEnergy += body.Mass * r2.Norm2(body.Velocity) / 2
+	}
+
+	return potentialEnergy + kineticEnergy
+}
