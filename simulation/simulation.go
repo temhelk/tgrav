@@ -7,11 +7,11 @@ import (
 const G float64 = 6.674e-11
 
 type Body struct {
-	Mass     float64
+	Mass float64
 
 	Acceleration r2.Vec
-	Position r2.Vec
-	Velocity r2.Vec
+	Position     r2.Vec
+	Velocity     r2.Vec
 }
 
 type Simulation struct {
