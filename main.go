@@ -56,6 +56,7 @@ func main() {
 
 	screen.EnableMouse()
 
+	renderForceField := false
 	rend := renderer.NewRenderer()
 
 	// Ratio between simulation time and real time
@@ -83,6 +84,10 @@ outer:
 					simulationSpeed *= 2
 				} else if r == '-' {
 					simulationSpeed /= 2
+				}
+
+				if r == 'f' {
+					renderForceField = !renderForceField
 				}
 			case *tcell.EventMouse:
 				buttons := event.Buttons()
@@ -119,7 +124,12 @@ outer:
 		// rend.AddFrameMessage(fmt.Sprintf("Center: <%.3e, %.3e>", centerOfMass.X, centerOfMass.Y))
 
 		screen.Clear()
-		rend.Render(screen, defaultStyle, sim)
+
+		if renderForceField {
+			rend.RenderForceField(screen, sim)
+		}
+
+		rend.Render(screen, sim)
 		screen.Show()
 
 		sleepFor := targetFrameTime - time.Now().Sub(lastFrameTime)

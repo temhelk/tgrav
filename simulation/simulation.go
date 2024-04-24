@@ -7,7 +7,7 @@ import (
 const G float64 = 6.674e-11
 
 type Body struct {
-	Mass float64
+	Mass     float64
 	Position r2.Vec
 	Velocity r2.Vec
 
@@ -15,7 +15,7 @@ type Body struct {
 }
 
 type Simulation struct {
-	TimeStep float64
+	TimeStep       float64
 	SimulationStep uint64
 
 	Bodies []Body
@@ -57,7 +57,7 @@ func (sim *Simulation) Step() {
 	for bodyIndex := range sim.Bodies {
 		body := &sim.Bodies[bodyIndex]
 
-		acceleration := r2.Scale(1 / body.Mass, body.appliedForce)
+		acceleration := r2.Scale(1/body.Mass, body.appliedForce)
 
 		body.Velocity = r2.Add(body.Velocity, r2.Scale(sim.TimeStep, acceleration))
 		body.Position = r2.Add(body.Position, r2.Scale(sim.TimeStep, body.Velocity))
@@ -74,7 +74,7 @@ func (sim *Simulation) CalculateCenterOfMass() r2.Vec {
 	var centerOfMass r2.Vec
 
 	for _, body := range sim.Bodies {
-		centerOfMass = r2.Add(centerOfMass, r2.Scale(body.Mass / totalMass, body.Position))
+		centerOfMass = r2.Add(centerOfMass, r2.Scale(body.Mass/totalMass, body.Position))
 	}
 
 	return centerOfMass
@@ -100,4 +100,18 @@ func (sim *Simulation) CalculateTotalEnergy() float64 {
 	}
 
 	return potentialEnergy + kineticEnergy
+}
+
+func (sim *Simulation) CalculateAccelerationAt(pos r2.Vec) r2.Vec {
+	var totalAcceleration r2.Vec
+
+	for _, body := range sim.Bodies {
+		posToBody := r2.Sub(body.Position, pos)
+		accelerationAmplitude := G * body.Mass / r2.Norm2(posToBody)
+		acceleration := r2.Scale(accelerationAmplitude, r2.Unit(posToBody))
+
+		totalAcceleration = r2.Add(totalAcceleration, acceleration)
+	}
+
+	return totalAcceleration
 }
