@@ -105,8 +105,8 @@ func (rend *Renderer) RenderForceField(screen tcell.Screen, sim *simulation.Simu
 		maxMass = math.Max(maxMass, body.Mass)
 	}
 
-	accelerationMax := simulation.G * maxMass / math.Pow(rend.WorldWidth/100, 2)
-	accelerationMin := simulation.G * maxMass / math.Pow(rend.WorldWidth, 2)
+	accelerationMax := simulation.G * maxMass / math.Pow(rend.WorldWidth/150, 2)
+	accelerationMin := simulation.G * maxMass / math.Pow(rend.WorldWidth/1.5, 2)
 
 	defaultStyle := tcell.StyleDefault.Foreground(tcell.ColorBlack)
 
@@ -134,10 +134,18 @@ func (rend *Renderer) AddFrameMessage(message string) {
 }
 
 func colorMap(t float64) tcell.Color {
+	tFrac := t - math.Floor(t)
+
+	color1Index := clamp(int(t * 256), 0, 255)
+	color2Index := min(color1Index + 1, 255)
+
+	color1 := turboSrgbFloats[color1Index]
+	color2 := turboSrgbFloats[color2Index]
+
 	return tcell.NewRGBColor(
-		clamp(int32(2*t*256), 0, 255),
-		clamp(int32(2*(1-t)*256), 0, 255),
-		0,
+		clamp(int32((color1[0] * (1 - tFrac) + color2[0] * tFrac) * 256), 0, 255),
+		clamp(int32((color1[1] * (1 - tFrac) + color2[1] * tFrac) * 256), 0, 255),
+		clamp(int32((color1[2] * (1 - tFrac) + color2[2] * tFrac) * 256), 0, 255),
 	)
 }
 
