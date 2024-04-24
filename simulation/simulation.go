@@ -34,7 +34,7 @@ func (sim *Simulation) Step() {
 		return
 	}
 
-	// Calculate forces for all bodies
+	// Calculate accelerations for all bodies
 	for bodyIndex := range sim.Bodies {
 		body := &sim.Bodies[bodyIndex]
 
