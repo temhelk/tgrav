@@ -25,14 +25,19 @@ func main() {
 			Velocity: r2.Vec{X: 0, Y: 0},
 		},
 		{
-			Mass:     1e12,
-			Position: r2.Vec{X: 15, Y: 0},
-			Velocity: r2.Vec{X: 0, Y: 3},
+			Mass:     1e11,
+			Position: r2.Vec{X: 0, Y: 15},
+			Velocity: r2.Vec{X: 2.3, Y: 0},
 		},
 		{
-			Mass:     1e12,
-			Position: r2.Vec{X: 0, Y: 11},
-			Velocity: r2.Vec{X: -2, Y: 0},
+			Mass:     1e10,
+			Position: r2.Vec{X: 0, Y: 13.5},
+			Velocity: r2.Vec{X: 0, Y: 0},
+		},
+		{
+			Mass:     1e9,
+			Position: r2.Vec{X: 0, Y: 4},
+			Velocity: r2.Vec{X: 4, Y: 0},
 		},
 	}
 
@@ -94,8 +99,8 @@ outer:
 		deltaTime := newFrameTime.Sub(lastFrameTime)
 		lastFrameTime = newFrameTime
 
-		rend.AddFrameMessage(fmt.Sprintf("dt: %.2f", deltaTime.Seconds()*1000))
-		rend.AddFrameMessage(fmt.Sprintf("speed: %.2f", simulationSpeed))
+		rend.AddFrameMessage(fmt.Sprintf("Δt: %.2f", deltaTime.Seconds()*1000))
+		rend.AddFrameMessage(fmt.Sprintf("Speed: %.2f", simulationSpeed))
 
 		simulationTimeAvailable += deltaTime.Seconds() * simulationSpeed
 		for simulationTimeAvailable >= sim.TimeStep {
@@ -105,8 +110,8 @@ outer:
 		}
 		rend.AddFrameMessage(fmt.Sprintf("Step: %d", sim.SimulationStep))
 
-		totalEnergy := sim.CalculateTotalEnergy()
-		rend.AddFrameMessage(fmt.Sprintf("Total energy: %.2e", totalEnergy))
+		// totalEnergy := sim.CalculateTotalEnergy()
+		// rend.AddFrameMessage(fmt.Sprintf("Total energy: %.2e", totalEnergy))
 
 		// @TODO: Don't recalculate it all the time?
 		centerOfMass := sim.CalculateCenterOfMass()

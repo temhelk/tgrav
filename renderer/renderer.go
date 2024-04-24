@@ -76,7 +76,7 @@ func (rend *Renderer) AddFrameMessage(message string) {
 func (rend *Renderer) writeString(screen tcell.Screen, x, y int, style tcell.Style, str string) {
 	width, _ := screen.Size()
 
-	for index, r := range str {
+	for index, r := range []rune(str) {
 		if (x + index >= width) {
 			return
 		}
