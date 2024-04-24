@@ -39,15 +39,15 @@ func (rend *Renderer) Render(screen tcell.Screen, sim *simulation.Simulation) {
 		x := (body.Position.X-rend.Center.X)*scaleX + (float64(width) / 2)
 		y := (body.Position.Y-rend.Center.Y)*scaleY + (float64(height) / 2)
 
-		xDecimal := x - math.Floor(x)
-		yDecimal := y - math.Floor(y)
+		xFractional := x - math.Floor(x)
+		yFractional := y - math.Floor(y)
 
 		xInt := int(x)
 		yInt := height - int(y) - 1
 
 		if xInt >= 0 && xInt < width && yInt >= 0 && yInt < height {
-			xPart := clamp(int(xDecimal*2), 0, 1)
-			yPart := 3 - clamp(int(yDecimal*4), 0, 3)
+			xPart := clamp(int(xFractional*2), 0, 1)
+			yPart := 3 - clamp(int(yFractional*4), 0, 3)
 
 			partNumber := yPart + xPart*4
 
@@ -175,6 +175,22 @@ func (rend *Renderer) CellToWorld(screen tcell.Screen, cell r2.Vec) r2.Vec {
 
 	worldX := (cell.X-(float64(width)/2))/scaleX + rend.Center.X
 	worldY := (cell.Y-(float64(height)/2))/scaleY + rend.Center.Y
+
+	return r2.Vec{X: worldX, Y: worldY}
+}
+
+func (rend *Renderer) CellDirToWorld(screen tcell.Screen, dir r2.Vec) r2.Vec {
+	width, height := screen.Size()
+
+	worldHeight := (float64(height) / float64(width)) * rend.WorldWidth
+
+	scaleX := float64(width) / rend.WorldWidth
+
+	// Scale y by 0.497 to adjust for non square character terminal (adjusted for my font)
+	scaleY := float64(height) / worldHeight * 0.497
+
+	worldX := dir.X / scaleX
+	worldY := dir.Y / scaleY
 
 	return r2.Vec{X: worldX, Y: worldY}
 }

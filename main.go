@@ -10,6 +10,7 @@ import (
 	"github.com/temhelk/tgrav/simulation"
 
 	"github.com/gdamore/tcell/v2"
+	"gonum.org/v1/gonum/spatial/r2"
 )
 
 func main() {
@@ -32,6 +33,10 @@ func main() {
 	screen.SetStyle(defaultStyle)
 
 	screen.EnableMouse()
+
+	screenDragging := false
+	var previousMouseX, previousMouseY int
+	var worldOffset r2.Vec
 
 	renderForceField := false
 	rend := renderer.NewRenderer()
@@ -68,11 +73,30 @@ outer:
 				}
 			case *tcell.EventMouse:
 				buttons := event.Buttons()
+				x, y := event.Position()
 
 				if buttons&tcell.WheelDown != 0 {
 					rend.WorldWidth *= 1.2
 				} else if buttons&tcell.WheelUp != 0 {
 					rend.WorldWidth /= 1.2
+				}
+
+				if screenDragging {
+					offsetX, offsetY := x - previousMouseX, y - previousMouseY
+
+					screenOffset := r2.Vec{X: float64(-offsetX), Y: float64(offsetY)}
+
+					worldOffset = r2.Add(worldOffset, rend.CellDirToWorld(screen, screenOffset))
+
+					previousMouseX = x
+					previousMouseY = y
+				}
+
+				if !screenDragging && (buttons&tcell.Button1 != 0) {
+					screenDragging = true
+					previousMouseX, previousMouseY = x, y
+				} else if screenDragging && (buttons&tcell.Button1 == 0) {
+					screenDragging = false
 				}
 			}
 		}
@@ -97,7 +121,8 @@ outer:
 
 		// @TODO: Don't recalculate it all the time?
 		centerOfMass := sim.CalculateCenterOfMass()
-		rend.Center = centerOfMass
+
+		rend.Center = r2.Add(centerOfMass, worldOffset)
 		// rend.AddFrameMessage(fmt.Sprintf("Center: <%.3e, %.3e>", centerOfMass.X, centerOfMass.Y))
 
 		screen.Clear()
