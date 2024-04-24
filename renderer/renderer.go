@@ -106,7 +106,7 @@ func (rend *Renderer) RenderForceField(screen tcell.Screen, sim *simulation.Simu
 	}
 
 	accelerationMax := simulation.G * maxMass / math.Pow(rend.WorldWidth/100, 2)
-	accelerationMin := simulation.G * maxMass / math.Pow(rend.WorldWidth*1.75, 2)
+	accelerationMin := simulation.G * maxMass / math.Pow(rend.WorldWidth, 2)
 
 	defaultStyle := tcell.StyleDefault.Foreground(tcell.ColorBlack)
 
