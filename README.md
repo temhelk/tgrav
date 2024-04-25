@@ -18,3 +18,6 @@ A simple terminal gravity simulator written in Go
 
 ### A system of 3 bodies with the same mass
 <a href="https://asciinema.org/a/656358" ><img src="https://asciinema.org/a/656358.png" width="400"></a>
+
+### Gravitational slingshot
+<a href="https://asciinema.org/a/656397" ><img src="https://asciinema.org/a/656397.png" width="400"></a>
