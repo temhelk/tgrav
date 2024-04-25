@@ -108,7 +108,7 @@ func (rend *Renderer) RenderForceField(screen tcell.Screen, sim *simulation.Simu
 	accelerationMax := simulation.G * maxMass / math.Pow(rend.WorldWidth/150, 2)
 	accelerationMin := simulation.G * maxMass / math.Pow(rend.WorldWidth/1.8, 2)
 
-	defaultStyle := tcell.StyleDefault.Foreground(tcell.ColorBlack)
+	defaultStyle := tcell.StyleDefault
 
 	for y := range height {
 		for x := range width {
@@ -119,7 +119,12 @@ func (rend *Renderer) RenderForceField(screen tcell.Screen, sim *simulation.Simu
 					math.Log(accelerationMax/accelerationMin)
 
 			color := colorMap(relativeValue)
+
 			colorStyle := defaultStyle.Background(color)
+			if relativeValue < 0.7 {
+				colorStyle = colorStyle.Foreground(tcell.ColorBlack)
+			}
+
 			screen.SetContent(x, height-y-1, ' ', nil, colorStyle)
 		}
 	}

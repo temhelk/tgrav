@@ -18,7 +18,7 @@ func main() {
 
 	sim := simulation.NewSimulation(timeStep)
 
-	sim.Bodies = simulation.ThreeBodyUnstableSystem[:]
+	sim.Bodies = simulation.FourBodySystem[:]
 	screen, err := tcell.NewScreen()
 
 	if err != nil {
