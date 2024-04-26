@@ -122,7 +122,7 @@ func (rend *Renderer) RenderForceField(screen tcell.Screen, sim *simulation.Simu
 			red, green, blue := color.RGB()
 
 			colorStyle := defaultStyle.Background(color)
-			if (float64(red)*0.299 + float64(green)*0.587 + float64(blue)*0.114) > 150 {
+			if (float64(red)*0.299 + float64(green)*0.587 + float64(blue)*0.114) > 100 {
 				colorStyle = colorStyle.Foreground(tcell.ColorBlack)
 			}
 
