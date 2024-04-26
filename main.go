@@ -18,7 +18,7 @@ func main() {
 
 	sim := simulation.NewSimulation(timeStep)
 
-	sim.Bodies = simulation.FourBodySystem[:]
+	sim.Bodies = simulation.LagrangeL4L5[:]
 	screen, err := tcell.NewScreen()
 
 	if err != nil {
@@ -39,6 +39,7 @@ func main() {
 	var worldOffset r2.Vec
 
 	renderForceField := false
+	clearFrame := true
 	rend := renderer.NewRenderer()
 
 	// Ratio between simulation time and real time
@@ -70,6 +71,10 @@ outer:
 
 				if r == 'f' {
 					renderForceField = !renderForceField
+				}
+
+				if r == 'c' {
+					clearFrame = !clearFrame
 				}
 			case *tcell.EventMouse:
 				buttons := event.Buttons()
@@ -125,7 +130,9 @@ outer:
 		rend.Center = r2.Add(centerOfMass, worldOffset)
 		// rend.AddFrameMessage(fmt.Sprintf("Center: <%.3e, %.3e>", centerOfMass.X, centerOfMass.Y))
 
-		screen.Clear()
+		if clearFrame {
+			screen.Clear()
+		}
 
 		if renderForceField {
 			rend.RenderForceField(screen, sim)
