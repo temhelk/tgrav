@@ -4,6 +4,7 @@ A simple terminal gravity simulator written in Go
 ## Controls
 * `+`/`-` changes the speed of the simulation
 * `f` enables the rendering of the acceleration magnitude
+* `c` toggles clearing the screen each frame (allows to see traces behind moving objects)
 * `mouse wheel` scrolling zooms in and out
 * `mouse panning` (while holding left mouse button) moves the view around
 
