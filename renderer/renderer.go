@@ -119,9 +119,10 @@ func (rend *Renderer) RenderForceField(screen tcell.Screen, sim *simulation.Simu
 					math.Log(accelerationMax/accelerationMin)
 
 			color := colorMap(relativeValue)
+			red, green, blue := color.RGB()
 
 			colorStyle := defaultStyle.Background(color)
-			if relativeValue < 0.7 {
+			if (float64(red)*0.299 + float64(green)*0.587 + float64(blue)*0.114) > 150 {
 				colorStyle = colorStyle.Foreground(tcell.ColorBlack)
 			}
 
